@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/pogosandbox/gpsoauth#readme",
   "dependencies": {
+    "crypto-js": "^3.1.9-1",
     "request": "^2.81.0"
   }
 }
