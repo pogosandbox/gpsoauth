@@ -1,0 +1,22 @@
+{
+  "name": "gpsoauth",
+  "version": "1.0.0",
+  "description": "Based on https://github.com/billyriantono/gpsoauthnode, but handle proxy through request module.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pogosandbox/gpsoauth.git"
+  },
+  "author": "niico",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pogosandbox/gpsoauth/issues"
+  },
+  "homepage": "https://github.com/pogosandbox/gpsoauth#readme",
+  "dependencies": {
+    "request": "^2.81.0"
+  }
+}
