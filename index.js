@@ -66,7 +66,7 @@ GoogleOauth.prototype.oauth = function (email, master_token, android_id, service
         url: AUTH_URL,
         form: data,
     }, function(err, response, body) {
-        callback(err, err ? null : oauthUtil.parseKeyValues(data));
+        callback(err, err ? null : oauthUtil.parseKeyValues(body));
     });
 };
 
@@ -90,7 +90,7 @@ GoogleOauth.prototype.login = function (email, password, android_id, callback) {
         url: AUTH_URL,
         form: data,
     }, function(err, response, body) {
-        let content = oauthUtil.parseKeyValues(data);
+        let content = oauthUtil.parseKeyValues(body);
         callback(err, err ? null : {androidId: android_id, masterToken: content.Token});
     });
 };
