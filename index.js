@@ -30,12 +30,18 @@ oauthUtil.salt = function (len) {
     }).join('');
 };
 
-var GoogleOauth = function () {
+var GoogleOauth = function() {
     this.request = request.defaults({
         headers: {
             'User-Agent': USER_AGENT,
         },
         encoding: 'utf8',
+    });
+};
+
+GoogleOauth.prototype.setProxy = function(proxy) {
+    this.request = this.request.defaults({
+        proxy: proxy,
     });
 };
 
