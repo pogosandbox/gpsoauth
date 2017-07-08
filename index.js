@@ -3,18 +3,17 @@ const url = require('url');
 const crypto = require('crypto');
 const request = require('request');
 const nodeRSA = require("node-rsa");
-const ursa = require("ursa");
 
-var AUTH_URL = 'https://android.clients.google.com/auth';
+let AUTH_URL = 'https://android.clients.google.com/auth';
 
-var USER_AGENT = 'Dalvik/2.1.0 (Linux; U; Android 5.1.1; Andromax I56D2G Build/LMY47V';
+let USER_AGENT = 'Dalvik/2.1.0 (Linux; U; Android 5.1.1; Andromax I56D2G Build/LMY47V';
 
 /**
  * Parse the values
  * @param {*} body 
  */
 function parseKeyValues(body) {
-    var obj = {};
+    let obj = {};
     body.split("\n").forEach(function (line) {
         var pos = line.indexOf("=");
         if (pos > 0) obj[line.substr(0, pos)] = line.substr(pos + 1);
@@ -28,22 +27,18 @@ function parseKeyValues(body) {
 function generateSignature(email, password) {
     let googleDefaultPublicKey  = 'AAAAgMom/1a/v0lblO2Ubrt60J2gcuXSljGFQXgcyZWveWLEwo6prwgi3iJIZdodyhKZQrNWp5nKJ3srRXcUW+F1BD3baEVGcmEgqaLZUNBjm057pKRI16kB0YppeGx5qIQ5QjKzsR8ETQbKLNWgRY0QRNVz34kMJR3P/LgHax/6rmf5AAAAAwEAAQ==';
     let keyBuffer = Buffer.from(googleDefaultPublicKey, 'base64');
-    
+
+    let pem = `-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDKJv9Wv79JW5TtlG67etCdoHLl
+0pYxhUF4HMmVr3lixMKOqa8IIt4iSGXaHcoSmUKzVqeZyid7K0V3FFvhdQQ922hF
+RnJhIKmi2VDQY5tOe6SkSNepAdGKaXhseaiEOUIys7EfBE0GyizVoEWNEETVc9+J
+DCUdz/y4B2sf+q5n+QIDAQAB
+-----END PUBLIC KEY-----`;
+
     let sha = crypto.createHash('sha1');
     sha.update(keyBuffer);
 
     let hash = sha.digest().slice(0, 4);
-
-    let modLength = keyBuffer.readUInt32BE(0);
-    let mod = keyBuffer.slice(4, 4 + modLength);
-    
-    let expLength = keyBuffer.readUInt32BE(4 + modLength);
-    let exp = keyBuffer.slice(8 + modLength, 8 + modLength + expLength);
-
-    let pem = ursa
-        .createPublicKeyFromComponents(mod, exp)
-        .toPublicPem()
-        .toString();
 
     let rsa = new nodeRSA(pem);
     let encrypted = rsa.encrypt(email + '\x00' + password);
@@ -63,7 +58,7 @@ function generateSignature(email, password) {
 /**
  * New instance
  */
-var GoogleOauth = function() {
+let GoogleOauth = function() {
     this.request = request.defaults({
         headers: {
             'User-Agent': USER_AGENT,
@@ -85,7 +80,7 @@ GoogleOauth.prototype.setProxy = function(proxy) {
  * OAuth against your application
  */
 GoogleOauth.prototype.oauth = function (email, master_token, android_id, service, app, client_sig, callback) {
-    var data = {
+    let data = {
         accountType: "HOSTED_OR_GOOGLE",
         Email: email,
         EncryptedPasswd: master_token,
@@ -113,9 +108,9 @@ GoogleOauth.prototype.oauth = function (email, master_token, android_id, service
  * Logs the user in. If it fails, falls back to a secure login
  */
 GoogleOauth.prototype.login = function (email, password, android_id, callback) {
-    var _this = this;
+    let self = this;
     
-    var data = {
+    let data = {
         accountType: "HOSTED_OR_GOOGLE",
         Email: email.trim(),
         has_permission: "1",
@@ -134,9 +129,8 @@ GoogleOauth.prototype.login = function (email, password, android_id, callback) {
         url: AUTH_URL,
         form: data,
     }, function(err, response, body) {
-        
         if(err || body.indexOf("Error") > -1) {
-            _this.loginForProtected(email, password, android_id, function(err, response) {
+            self.loginForProtected(email, password, android_id, function(err, response) {
                 callback(err, response);
             })
         } else {
@@ -150,8 +144,8 @@ GoogleOauth.prototype.login = function (email, password, android_id, callback) {
  * Secure login
  */
 GoogleOauth.prototype.loginForProtected = function(username, password, android_id, callback) {
-    var data = {
-        "Email": "faith1ixt5adams@gmail.com",
+    let data = {
+        "Email": username,
         "EncryptedPasswd":  generateSignature(username, password),
         "accountType": "HOSTED_OR_GOOGLE",
         "add_account": "1",
