@@ -107,7 +107,7 @@ GoogleOauth.prototype.oauth = function (email, master_token, android_id, service
 /**
  * Logs the user in. If it fails, falls back to a secure login
  */
-GoogleOauth.prototype.login = function (email, password, android_id, callback) {
+GoogleOauth.prototype.loginWithPassword = function (email, password, android_id, callback) {
     let self = this;
     
     let data = {
@@ -129,10 +129,8 @@ GoogleOauth.prototype.login = function (email, password, android_id, callback) {
         url: AUTH_URL,
         form: data,
     }, function(err, response, body) {
-        if(err || body.indexOf("Error") > -1) {
-            self.loginForProtected(email, password, android_id, function(err, response) {
-                callback(err, response);
-            })
+        if(err) {
+            callback(err);
         } else {
             const content = parseKeyValues(body);
             callback(err, {androidId: android_id, masterToken: content.Token});
@@ -143,10 +141,10 @@ GoogleOauth.prototype.login = function (email, password, android_id, callback) {
 /**
  * Secure login
  */
-GoogleOauth.prototype.loginForProtected = function(username, password, android_id, callback) {
+GoogleOauth.prototype.login = function(username, password, android_id, callback) {
     let data = {
         "Email": username,
-        "EncryptedPasswd":  generateSignature(username, password),
+        "EncryptedPasswd": generateSignature(username, password),
         "accountType": "HOSTED_OR_GOOGLE",
         "add_account": "1",
         "androidId": android_id,
@@ -163,7 +161,6 @@ GoogleOauth.prototype.loginForProtected = function(username, password, android_i
         url: AUTH_URL,
         form: data,
     }, function(err, response, body) {
-        
         if(err) {
             callback(err);
         } else {
