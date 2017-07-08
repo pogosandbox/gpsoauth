@@ -1,3 +1,9 @@
 # gpsoauth
 
-Based on https://github.com/billyriantono/gpsoauthnode, but handle proxy through request module.
+Allow login to Google Play Services.
+
+* Handle proxy
+* Handle "encryptedpass' failover for some account that have issues
+
+Original impletantion based on https://github.com/billyriantono/gpsoauthnode 
+
