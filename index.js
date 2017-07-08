@@ -151,7 +151,7 @@ GoogleOauth.prototype.login = function (email, password, android_id, callback) {
  */
 GoogleOauth.prototype.loginForProtected = function(username, password, android_id, callback) {
     var data = {
-        "Email": "faith1ixt5adams@gmail.com",
+        "Email": username,
         "EncryptedPasswd":  generateSignature(username, password),
         "accountType": "HOSTED_OR_GOOGLE",
         "add_account": "1",
