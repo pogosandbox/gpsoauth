@@ -1,6 +1,6 @@
 {
   "name": "gpsoauth",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Based on https://github.com/billyriantono/gpsoauthnode, but handle proxy through request module.",
   "main": "index.js",
   "scripts": {
